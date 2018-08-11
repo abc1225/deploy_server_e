@@ -1,5 +1,5 @@
 #!/bin/bash
-
+CURRENT_PATH=path=$(cd `dirname $0`;pwd)
 PHP_INI_PATH=/usr/local/lib
 PHP_FPM_PATH=/usr/local/etc
 PHP_EXTENSION_PATH=/usr/local/lib/php/extensions/no-debug-non-zts-20121212/
@@ -44,32 +44,32 @@ make install
 # 1. /usr/local/lib/php.ini
 #**************************************************************#
 # 把php配置文件 拷贝至 /usr/local/lib/php.ini
-cp php.ini-production $PHP_INI_PATH/php.ini
+cp $CURRENT_PATH/php.ini $PHP_INI_PATH/php.ini
 
 #配置php.ini 文件
-sed -i "s#expose_php = On#expose_php = Off#g" $PHP_INI_PATH/php.ini
-sed -i "s#max_execution_time = 30#max_execution_time = 300#g" $PHP_INI_PATH/php.ini
-sed -i "s#max_input_time = 60#max_input_time = 600#g" $PHP_INI_PATH/php.ini
-sed -i "s#;error_log = php_errors.log#error_log = /usr/local/php/var/log/php_errors.log#g" $PHP_INI_PATH/php.ini
-sed -i "s#post_max_size = 8M#post_max_size = 100M#g" $PHP_INI_PATH/php.ini
-sed -i "s#;cgi.fix_pathinfo=1#cgi.fix_pathinfo=0#g" $PHP_INI_PATH/php.ini
-sed -i "s#;upload_tmp_dir =#upload_tmp_dir = /tmp#g" $PHP_INI_PATH/php.ini
-sed -i "s#;date.timezone =#date.timezone = Europe/London#g" $PHP_INI_PATH/php.ini
-#sed -i "s#;date.timezone =#date.timezone = Asia/Tokyo#g" $PHP_INI_PATH/php.ini
-sed -i 's#expose_php = On@expose_php = Off#g' $PHP_INI_PATH/php.ini
+# sed -i "s#expose_php = On#expose_php = Off#g" $PHP_INI_PATH/php.ini
+# sed -i "s#max_execution_time = 30#max_execution_time = 300#g" $PHP_INI_PATH/php.ini
+# sed -i "s#max_input_time = 60#max_input_time = 600#g" $PHP_INI_PATH/php.ini
+# sed -i "s#;error_log = php_errors.log#error_log = /usr/local/php/var/log/php_errors.log#g" $PHP_INI_PATH/php.ini
+# sed -i "s#post_max_size = 8M#post_max_size = 100M#g" $PHP_INI_PATH/php.ini
+# sed -i "s#;cgi.fix_pathinfo=1#cgi.fix_pathinfo=0#g" $PHP_INI_PATH/php.ini
+# sed -i "s#;upload_tmp_dir =#upload_tmp_dir = /tmp#g" $PHP_INI_PATH/php.ini
+# sed -i "s#;date.timezone =#date.timezone = Europe/London#g" $PHP_INI_PATH/php.ini
+# #sed -i "s#;date.timezone =#date.timezone = Asia/Tokyo#g" $PHP_INI_PATH/php.ini
+# sed -i 's#expose_php = On@expose_php = Off#g' $PHP_INI_PATH/php.ini
 
-#并为php添加共享链接库，在php.ini最后添加
-sed -i '$a\extension=ftp.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=mbstring.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=pcntl.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=shmop.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=soap.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=sockets.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=sysvsem.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=zip.so' $PHP_INI_PATH/php.ini
-sed -i '$a\extension=redis.so' $PHP_INI_PATH/php.ini
-sed -i '$a\zend_extension=ZendGuardLoader.so' $PHP_INI_PATH/php.ini
-sed -i '$a\zend_extension=opcache.so' $PHP_INI_PATH/php.ini
+# #并为php添加共享链接库，在php.ini最后添加
+# sed -i '$a\extension=ftp.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=mbstring.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=pcntl.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=shmop.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=soap.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=sockets.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=sysvsem.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=zip.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\extension=redis.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\zend_extension=ZendGuardLoader.so' $PHP_INI_PATH/php.ini
+# sed -i '$a\zend_extension=opcache.so' $PHP_INI_PATH/php.ini
 
 
 # 让php-fpm的配置文件生效
@@ -86,7 +86,7 @@ sed -i '$a\zend_extension=opcache.so' $PHP_INI_PATH/php.ini
 # pm.max_requests = 2048
 
 #添加PHP-FPM的配置文件
-cp $PHP_FPM_PATH/php-fpm.conf.default $PHP_FPM_PATH/php-fpm.conf
+cp $CURRENT_PATH/php-fpm.conf $PHP_FPM_PATH/php-fpm.conf
  
 #说明： pm.max_children, pm.start_servers, pm.min_spare_servers, pm.max_spare_servers 
 #这几个参数的值可以根据服务器内存的大小来调整，内存大的，设置的值就大
@@ -94,42 +94,42 @@ cp $PHP_FPM_PATH/php-fpm.conf.default $PHP_FPM_PATH/php-fpm.conf
 #  pm.max_children 的值 如果是多核cpu的vps或者服务器，上面的数值等于cpu数量即可；如果是单核的vps，那么pm.max_children = 2，即可达到一定的优化效果
  
 #配置php-fpm.conf
-sed -i "s#;pid = run/php-fpm.pid#pid = run/php-fpm.pid#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;error_log#error_log#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;log_level = notice#log_level = warning#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#; process.max = 128#process.max = 128#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;slowlog#slowlog#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;events.mechanism = epoll#events.mechanism = epoll#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;pid = run/php-fpm.pid#pid = run/php-fpm.pid#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;error_log#error_log#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;log_level = notice#log_level = warning#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#; process.max = 128#process.max = 128#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;slowlog#slowlog#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;events.mechanism = epoll#events.mechanism = epoll#g" $PHP_FPM_PATH/php-fpm.conf
 
-# 配置php-fpm进程开启模式  
-sed -i "s#pm = dynamic#pm = static#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#pm.max_children = 5#pm.max_children = 8#g" $PHP_FPM_PATH/php-fpm.conf
-# used on when use dynamic pm model
-sed -i "s#pm.start_servers = 2#pm.start_servers = 4#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#pm.min_spare_servers = 1#pm.min_spare_servers = 2#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#pm.max_spare_servers = 3#pm.max_spare_servers = 5#g" $PHP_FPM_PATH/php-fpm.conf
+# # 配置php-fpm进程开启模式  
+# sed -i "s#pm = dynamic#pm = static#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#pm.max_children = 5#pm.max_children = 8#g" $PHP_FPM_PATH/php-fpm.conf
+# # used on when use dynamic pm model
+# sed -i "s#pm.start_servers = 2#pm.start_servers = 4#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#pm.min_spare_servers = 1#pm.min_spare_servers = 2#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#pm.max_spare_servers = 3#pm.max_spare_servers = 5#g" $PHP_FPM_PATH/php-fpm.conf
 
-# max requests: php-fpm process restart 
-sed -i "s#;pm.max_requests = 500#pm.max_requests = 2000#g" $PHP_FPM_PATH/php-fpm.conf
+# # max requests: php-fpm process restart 
+# sed -i "s#;pm.max_requests = 500#pm.max_requests = 2000#g" $PHP_FPM_PATH/php-fpm.conf
 
-sed -i "s#;listen.allowed_clients#listen.allowed_clients#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#user = nobody#user = daemon#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#group = nobody#group = daemon#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#listen = 127.0.0.1:9000#listen = 127.0.0.1:9000\n;listen = /tmp/php-cgi.sock#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;listen.owner = nobody#listen.owner = daemon#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;listen.group = nobody#listen.group = daemon#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;listen.mode = 0666#listen.mode = 0666#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;listen.allowed_clients#listen.allowed_clients#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#user = nobody#user = daemon#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#group = nobody#group = daemon#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#listen = 127.0.0.1:9000#listen = 127.0.0.1:9000\n;listen = /tmp/php-cgi.sock#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;listen.owner = nobody#listen.owner = daemon#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;listen.group = nobody#listen.group = daemon#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;listen.mode = 0666#listen.mode = 0666#g" $PHP_FPM_PATH/php-fpm.conf
 
-# config log
-sed -i "s#;slowlog#slowlog#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;access.format#access.format#g" $PHP_FPM_PATH/php-fpm.conf
-sed -i "s#;access.log = log/$pool.access.log#access.log = /usr/local/php/var/log/$pool.access.log#g" $PHP_FPM_PATH/php-fpm.conf
+# # config log
+# sed -i "s#;slowlog#slowlog#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;access.format#access.format#g" $PHP_FPM_PATH/php-fpm.conf
+# sed -i "s#;access.log = log/$pool.access.log#access.log = /usr/local/php/var/log/$pool.access.log#g" $PHP_FPM_PATH/php-fpm.conf
 
 
 
 
 # 开机自动启动php-fpm
-cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+cp $CURRENT_PATH/init.d/php-fpm /etc/init.d/php-fpm
 
 #**************Zend Guard Loader支持加密*************#
 #将ZendGuardLoader.so 拷贝至php extension路径下 /usr/local/lib/php/extensions/no-debug-non-zts-20121212
@@ -139,6 +139,10 @@ tar zxvf zend-loader-php5.5-linux-x86_64_update1.tar.gz
 cd zend-loader-php5.5-linux-x86_64
 cp ZendGuardLoader.so $PHP_EXTENSION_PATH
 cd ..
+
+# copy redis module
+cp $CURRENT_PATH/modules_centos7/*.so $PHP_EXTENSION_PATH
+
 
 # 开机自动启动php-fpm
 chmod o+x /etc/init.d/php-fpm
