@@ -1,5 +1,4 @@
 #!/bin/bash
-CURRENT_PATH=path=$(cd `dirname $0`;pwd)
 PHP_INI_PATH=/usr/local/lib
 PHP_FPM_PATH=/usr/local/etc
 PHP_EXTENSION_PATH=/usr/local/lib/php/extensions/no-debug-non-zts-20121212/
@@ -44,7 +43,9 @@ make install
 # 1. /usr/local/lib/php.ini
 #**************************************************************#
 # 把php配置文件 拷贝至 /usr/local/lib/php.ini
-cp $CURRENT_PATH/php.ini $PHP_INI_PATH/php.ini
+cd ..
+cp php.ini $PHP_INI_PATH/php.ini
+chmod 777 $PHP_INI_PATH/php.ini
 
 #配置php.ini 文件
 # sed -i "s#expose_php = On#expose_php = Off#g" $PHP_INI_PATH/php.ini
@@ -86,7 +87,8 @@ cp $CURRENT_PATH/php.ini $PHP_INI_PATH/php.ini
 # pm.max_requests = 2048
 
 #添加PHP-FPM的配置文件
-cp $CURRENT_PATH/php-fpm.conf $PHP_FPM_PATH/php-fpm.conf
+cp php-fpm.conf $PHP_FPM_PATH/php-fpm.conf
+chmod 777 $PHP_FPM_PATH/php-fpm.conf
  
 #说明： pm.max_children, pm.start_servers, pm.min_spare_servers, pm.max_spare_servers 
 #这几个参数的值可以根据服务器内存的大小来调整，内存大的，设置的值就大
@@ -129,19 +131,22 @@ cp $CURRENT_PATH/php-fpm.conf $PHP_FPM_PATH/php-fpm.conf
 
 
 # 开机自动启动php-fpm
-cp $CURRENT_PATH/init.d/php-fpm /etc/init.d/php-fpm
+cp ./init.d/php-fpm /etc/init.d/php-fpm
+chmod 777 /etc/init.d/php-fpm
 
 #**************Zend Guard Loader支持加密*************#
 #将ZendGuardLoader.so 拷贝至php extension路径下 /usr/local/lib/php/extensions/no-debug-non-zts-20121212
-cd ..
+# copy redis module
+cp ./modules_centos7/redis.so $PHP_EXTENSION_PATH
+
+
 wget http://downloads.zend.com/guard/7.0.0/zend-loader-php5.5-linux-x86_64_update1.tar.gz
 tar zxvf zend-loader-php5.5-linux-x86_64_update1.tar.gz
 cd zend-loader-php5.5-linux-x86_64
 cp ZendGuardLoader.so $PHP_EXTENSION_PATH
 cd ..
 
-# copy redis module
-cp $CURRENT_PATH/modules_centos7/*.so $PHP_EXTENSION_PATH
+
 
 
 # 开机自动启动php-fpm

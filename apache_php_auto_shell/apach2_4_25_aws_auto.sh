@@ -1,6 +1,5 @@
 #!/bin/bash
 
-CURRENT_PATH=path=$(cd `dirname $0`;pwd)
 APACHE_CONF_PATH=/usr/local/apache2/conf
 
 # 第一步   Centos 编译安装 Apache 2.4
@@ -70,7 +69,8 @@ cp conf/server.key /usr/local/apache2/conf/server.key
 
 
 # 把新编译安装的 Apache 2.4.6 拷贝到位
-cp $CURRENT_PATH/init.d/httpd /etc/init.d/httpd
+cp ./init.d/httpd /etc/init.d/httpd
+chmod 777 /etc/init.d/httpd
 
 # ***************编辑 /etc/init.d/httpd 文件，在首行 #!/bin/sh 下面加入两行************
 # chkconfig: 35 85 15
